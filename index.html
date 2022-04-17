@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPMer</title>
+</head>
+<body>
+  <h1>BPMer</h1>
+  <button id="reset">Reset</button>
+  <button id="bpm">Click (0/2)</button>
+</body>
+
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    text-align: center;
+  }
+
+  body {
+    display: flex;
+    flex-flow: column;
+  }
+
+
+  h1 {
+    margin: 10px;
+  }
+
+
+  button {
+    font-weight: bolder;
+    font-size: x-large;
+    width: 100%;
+    padding: 4px;
+    border: none;
+  }
+
+
+  #reset {
+    background: #ff3333;
+    color: rgb(231, 231, 231);
+  }
+
+  #reset:active {
+    background: #ffc8c8;
+    color: #94918d;
+  }
+
+
+  #bpm {
+    background: #f2f1ef;
+    height: 100%;
+  }
+
+  #bpm:active {
+    color: #94918d;
+  }
+</style>
+
+<script>
+  /***** Config *****/
+  /** How many 'last clicks' should be considered */
+  const lastClicks = 16;
+  
+  /** The amount of time after which the counter should be reset (in ms) */
+  const timeout = 10000;
+
+  /** Helper constant for faster calculations (no need to calculate lastClicks - 1 everytime the function runs) */
+  const cliCalcConst = lastClicks - 1;
+  /***** Config END *****/
+
+
+
+  /** Button element */
+  const bpme = document.getElementById("bpm");
+
+  /** Reset button */
+  const bpmr = document.getElementById("reset");
+
+
+
+  // Variables
+  var clicks = [];
+  var currClicks = 0;
+  var bpm = 0;
+  var tout = null;
+
+
+  // Either press enter or spacebar...
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" || e.key === " ") {
+      /* The user might have clicked the button before. If he did, the button will be "pressed" twice - from the native browser function (if you click on
+         any button or link in the browser and press spacebar or enter afterwards, the browser will act as if the button was clicked by a mouse) and
+         from this function. The browser implementation is not needed nor wanted, because this function detects keypresses everywhere and all the
+         time at the page - the button does not need to be focused. Blur is a function that de-focusses an element. */
+      bpme.blur();
+      bpmer();
+    }
+
+    else if (e.key.toUpperCase() === "R") bpmr.click();
+
+    // console.log(e);
+  });
+
+  // ... or click the button to measure BPM
+  bpme.onclick = bpmer;
+
+
+  // Counter resetter
+  bpmr.onclick = function() {
+    resetCounters();
+    clearTimeout(tout);
+    bpme.innerText = "Click (0/2)";
+  };
+
+
+
+
+
+
+
+  function bpmer() {
+    currClicks++;
+    clicks.unshift(Date.now());
+    clicks = clicks.slice(0, lastClicks);
+    // console.log(clicks);
+
+    clearTimeout(tout);
+    tout = setTimeout(function() {
+      resetCounters();
+      bpme.innerText += "\nResetted!"
+    }, timeout);
+
+    bpm = 0;
+    for (let i = 1; i < lastClicks; i++) {
+      bpm += (clicks[i - 1] - clicks[i]) ? (clicks[i - 1] - clicks[i]) : 0;
+      // console.log('i: ' + i + ' - time: ' + (clicks[i - 1] - clicks[i]) + ' --ftime: ' + bpm);
+    }
+
+    if (!bpm) bpme.innerText = 'Click (' + currClicks + '/2)';
+    else {
+      let cliCalc = (currClicks < cliCalcConst) ? currClicks - 1 : cliCalcConst;
+      bpm = (60000 / (bpm / cliCalc)).toFixed(2);
+      bpme.innerText = bpm + '\nBPM';
+      // console.log('Final BPM: ' + bpm);
+    }
+  };
+
+
+  function resetCounters()
+  {
+    clicks = [];
+    currClicks = 0;
+    bpm = 0;
+  }
+
+
+
+  /*setInterval(function() {
+    bpm.innerHTML = Date.now();
+  }, 1000);*/
+</script>
+</html>
