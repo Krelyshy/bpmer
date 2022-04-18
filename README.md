@@ -1,5 +1,5 @@
 # bpmer
-A simple web browser program that calculates the beats per minute (BPM) based on mouse/keyboard clicking.
+A simple web browser program that calculates beats per minute (BPM) based on mouse/keyboard clicking.
 You can open the program here: https://krelyshy.github.io/bpmer/
 
 
