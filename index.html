@@ -16,7 +16,11 @@
   <meta property="og:image:height" content="512">
 </head>
 <body>
-  <h1>BPMer</h1>
+  <header>
+    <h1>BPMer</h1>
+    <!-- <button id="info">Info</button> -->
+    <a id="info" href="https://github.com/Krelyshy/bpmer">Info</a>
+  </header>
   <button id="reset">Reset</button>
   <button id="bpm">Click (0/2)</button>
 </body>
@@ -33,10 +37,29 @@
     flex-flow: column;
   }
 
+  header {
+    display: flex;
+    flex-flow: wrap;
+    align-items: center; /* "vertical align" */
+    justify-content: center; /* "horizontal align" */
+  }
 
   h1 {
     margin: 10px;
   }
+
+  #info {
+    background-color: rgb(0, 183, 255);
+    color: white;
+    font: -moz-button;
+    font-weight: bolder;
+    font-size: xx-large;
+    text-decoration: none;
+    padding: 4px;
+    width: initial;
+  }
+
+
 
 
   button {
